@@ -10,6 +10,68 @@
   </head>
   <body>
 
+    <input id="buscar" type="text">
+    <input id="btnBuscar" type="button" value="Buscar" onclick="cargarDatos()"> <br><br><br>
+
+    <div class="contenedor">
+        <img id="imagen" src="" alt="">
+    </div>
+    <div class="descripciones">
+        <label>Code:</label>
+        <label id="id"></label><br>
+        <label>Name:</label>
+        <label id="name"></label><br>
+        <label>Short Name:</label>
+        <label id="shortname"></label><br>
+
+    </div>
+
+
+    <script type="text/javascript">
+var teams;
+var lugar;
+
+function funciones(){
+  cargarDatos();
+  //cargarArea();
+}
+
+function cargarDatos() {
+  var teams=document.getElementById("buscar").value;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange= function () {
+    if (this.readyState==4 && this.status==200) {
+      teams=JSON.parse(this.responseText);
+      //var myJSON = JSON.stringify(competitions.445.teams.crestUrl);
+      //var myJSON = myJSON.slice(1, -1);
+      //document.getElementById("imagen").src = myJSON;
+      document.getElementById("id").innerHTML=teams.code;
+      document.getElementById("name").innerHTML= teams.name;
+      document.getElementById("shortname").innerHTML= teams.shortName;
+      //document.getElementById("habilidad").innerHTML=pokemon.abilities[0].ability.name;
+    }
+  };
+  xhttp.open("GET", "http://api.football-data.org/v1/teams/"+ teams +"/",true);
+  xhttp.send();
+}
+
+function cargarArea() {
+  var nombre=document.getElementById("buscar").value;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange= function () {
+    if (this.readyState==4 && this.status==200) {
+      lugar=JSON.parse(this.responseText);
+      console.log(lugar.habitat.name);
+      document.getElementById("area").innerHTML= lugar.habitat.name;
+    }
+  };
+  xhttp.open("GET", "http://api.football-data.org/v1/competitions/445/teams/"+ nombre +"/",true);
+  xhttp.send();
+}
+</script>
+
+
+
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
