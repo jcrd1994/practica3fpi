@@ -1,42 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>FootballApi</title>
+    <style media="screen">
+      body{
+        background-image: url(img/futbol.jpg);
+        background-repeat: no-repeat;
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+      }
+         .panel-heading{
+
+               color: white;
+               font-size: bold;
+               font-family: monospace;
+               font-size: 20px;
+         }
+    </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script  type="text/javascript" src="../practica3fpi/js/jquery-3.2.1.min.js"></script>
   </head>
   <body>
 
-    <input id="buscar" type="text">
-    <input id="btnBuscar" type="button" value="Buscar" onclick="cargarDatos()"> <br><br><br>
 
-    <div class="contenedor">
-        <img id="imagen" src="" alt="">
+<br><br>
+    <div class="panel panel-default">
+        <div class="panel-heading">Ligas</div>
+        <button id="get_btn" class="btn btn-default">Cargar Ligas</button>
+        <div class="panel-body" id="salida"></div>
     </div>
-    <div class="descripciones">
-        <label>Code:</label>
-        <label id="id"></label><br>
-        <label>Name:</label>
-        <label id="name"></label><br>
-        <label>Short Name:</label>
-        <label id="shortname"></label><br>
+<br><br><br>
+    <input id="buscar2" type="text" placeholder="ingresa el id de la liga">
+    <button id="get_btn2" class="btn btn-default">Cargar Equipos</button>
 
+    <div class="panel panel-default">
+        <div class="panel-heading">Equipos</div>
+        <div class="panel-body" id="salida2"></div>
     </div>
 
+    <br><br><br>
+        <input id="buscar3" type="text" placeholder="ingresa el id del equipo">
+        <button id="get_btn3" class="btn btn-default">Cargar jugadores</button>
 
+        <div class="panel panel-default">
+            <div class="panel-heading">Jugadores</div>
+            <div class="panel-body" id="salida3"></div>
+        </div>
     <script type="text/javascript">
 var teams;
-var lugar;
+
 
 function funciones(){
   cargarDatos();
-  //cargarArea();
+
 }
 
-function cargarDatos() {
+/*function cargarDatos() {
   var teams=document.getElementById("buscar").value;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange= function () {
@@ -55,24 +79,80 @@ function cargarDatos() {
   xhttp.send();
 }
 
-function cargarArea() {
-  var nombre=document.getElementById("buscar").value;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange= function () {
-    if (this.readyState==4 && this.status==200) {
-      lugar=JSON.parse(this.responseText);
-      console.log(lugar.habitat.name);
-      document.getElementById("area").innerHTML= lugar.habitat.name;
-    }
-  };
-  xhttp.open("GET", "http://api.football-data.org/v1/competitions/445/teams/"+ nombre +"/",true);
-  xhttp.send();
-}
+
+}*/
+
+
+$(function () {
+    $("#get_btn").click(function () {
+        $.ajax({
+            url: 'http://api.football-data.org/v1/competitions',
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                var ligas = "<ul>";
+                for (var c = 0; c < data.length; c++) {
+                    var infoligas = "<li>"+ data[c].id + data[c].league;
+                    infoligas += " - " + data[c].numberOFTeams;
+                    infoligas += " <em>" + data[c].caption + "</em> </li>";
+                    ligas += infoligas;
+                }
+                ligas += "</ul>";
+                $("#salida").html(ligas);
+            }
+        })
+    });
+});
+
+
+$(function () {
+    $("#get_btn2").click(function () {
+      var idliga = $("#buscar2").value
+        $.ajax({
+            url: 'http://api.football-data.org/v1/competitions/' +idliga+ 'teams/',
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                var ligas = "<ul>";
+                for (var c = 0; c < data.length; c++) {
+                    var infoligas = "<li><img src='"+data[c].crestUrl+"' width='100'/>" + data[c].name;
+                    infoligas += " - " + data[c].code;
+                    infoligas += " <em>" + data[c].shortName + "</em> </li>";
+                    ligas += infoligas;
+                }
+                ligas += "</ul>";
+                $("#salida2").html(ligas);
+            }
+        })
+    });
+});
+
+$(function () {
+    $("#get_btn3").click(function () {
+      var idequipo = $("#buscar3").value
+        $.ajax({
+            url: 'http://api.football-data.org/v1/teams/57/' +idequipo+ 'players',
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                var jugadores = "<ul>";
+                for (var c = 0; c < data.length; c++) {
+                    var infojugadores = "<li>"+ data[c].name + data[c].position;
+                    infojugadores += " - " + data[c].nationality;
+                    infojugadores += " <em>" + data[c].jerseyNumber + "</em> </li>";
+                    jugadores += infojugadores;
+                }
+                jugadores += "</ul>";
+                $("#salida3").html(ligas);
+            }
+        })
+    });
+});
+
 </script>
 
 
 
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   </body>
